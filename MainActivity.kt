@@ -37,57 +37,8 @@ class MainActivity : AppCompatActivity() {
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpRv()
-        handleIntent(intent)
-//             binding.sv.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
-//            override fun onQueryTextSubmit(query: String): Boolean {
-//                    myadapter.filter.filter(query)
-//                    binding.sv.clearFocus()
-//                    return true
-//
-//            }
-//                 override fun onQueryTextChange(newText: String): Boolean {
-//                    Toast.makeText(this@MainActivity,"${binding.sv.isIconified}",Toast.LENGTH_SHORT).show()
-//                    myadapter.filter.filter(newText)
-//                return true
-//            }
-//        })
-//        binding.sv.queryHint="search vegetables"
-//        binding.sv.isIconified=false
-//        binding.sv.setOnQueryTextFocusChangeListener { v, hasFocus ->
-//
-//            if(hasFocus){
-//                v.isEnabled=fals
-//            }
-//        }
-//        binding.sv.setOnCloseListener {
-//            Toast.makeText(this,"search view closed",Toast.LENGTH_SHORT).show()
-//            binding.sv.setQuery("",false)
-//        binding.sv.onActionViewCollapsed()
-//        true
-//        }
-//
-//        val closebtn: View?=binding.sv.findViewById(androidx.appcompat.R.id.search_close_btn)
-//        closebtn?.setOnClickListener {
-//            binding.sv.setQuery("",false)
-//            binding.sv.onActionViewCollapsed()
-//      }
-
-
     }
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-    }
-    private fun handleIntent(intent: Intent) {
-
-        if(Intent.ACTION_SEARCH==intent.action)
-        {
-            intent.getStringExtra(SearchManager.QUERY)?.also {
-                myadapter.filter.filter(it)
-            }
-        }
-
-    }
+ 
     fun setUpRv(){
         binding.rvVegetables.apply {
             adapter=myadapter
@@ -103,9 +54,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
-        val sm = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        
+        // SEARCH VIEW REFERENCE 
         val sv = (menu?.findItem(R.id.search))?.actionView as SearchView
+        
+        // MENU ITEM REFERENCE
         val menu_item = menu.findItem(R.id.search)
+        
+        //ADDING LISTENER TO SEARCH VIEW
         sv.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 myadapter.filter.filter(query)
@@ -113,6 +69,7 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
 
+            //CALLBACKS WHEN USER QUERIES 
             override fun onQueryTextChange(newText: String?): Boolean {
                 myadapter.filter.filter(newText)
                 if (menu?.findItem(R.id.search).isActionViewExpanded) {
@@ -125,55 +82,19 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
         })
+        
+        // IF QUERY IS EMPTY LIST RETURNS TO NORMAL STATE 
         sv.setOnQueryTextFocusChangeListener { v, hasFocus ->
             if (!hasFocus && sv.query.isEmpty()) {
 
                 sv.setQuery("", false)
-                menu_item.collapseActionView()   //  WORKING
-//                sv.onActionViewCollapsed()        NOT WORKING
+                menu_item.collapseActionView()   //  WORKING VIA MENU ITEM REFERENCE 
+//                sv.onActionViewCollapsed()        NOT WORKING 
 
             }
         }
         return true
     }
-
-
-
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//
-//        when(item.itemId){
-//            R.id.search->{
-//                val sv=item.actionView as SearchView
-////                sv.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
-////                    override fun onQueryTextSubmit(query: String?): Boolean {
-////                       myadapter.filter.filter(query)
-////                        return true
-////                    }
-////
-////                    override fun onQueryTextChange(newText: String?): Boolean {
-////
-////                        myadapter.filter.filter(newText)
-////                        return true
-////                    }
-////                })
-////                sv.setOnCloseListener {
-////                    sv.setQuery("",false)
-////                    sv.onActionViewCollapsed()
-////                    false
-////                }
-//
-////                val closebtn: View?=sv.findViewById(androidx.appcompat.R.id.search_close_btn)
-////        closebtn?.setOnClickListener {
-////            sv.setQuery("",false)
-////            sv.onActionViewCollapsed()
-////      }
-//                return true}
-//            else->{return super.onOptionsItemSelected(item)}
-//        }
-//
-//
-//    }
-
 }
 
 
